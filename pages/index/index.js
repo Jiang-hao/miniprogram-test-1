@@ -7,7 +7,29 @@ Page({
     motto: 'Hello World',
     userInfo: {},
     hasUserInfo: false,
-    canIUse: wx.canIUse('button.open-type.getUserInfo')
+    canIUse: wx.canIUse('button.open-type.getUserInfo'),
+    tasks:[]
+  },
+
+  formSubmit: function (e) {
+    var input = e.detail.value.task
+    console.log('form发生了submit事件，携带数据为：', input)
+    var t = this.data.tasks
+    t.push(input)
+    this.setData({tasks:t})
+    // local storage
+    wx.setStorageSync('todos', this.data.tasks)
+  },
+
+  formReset: function () {
+    console.log('form发生了reset事件')
+  },
+
+  load: function(){
+    var initTasks = wx.getStorageSync('todos')
+    if (initTasks){
+      this.setData({tasks: initTasks})
+    }
   },
   //事件处理函数
   bindViewTap: function() {
@@ -15,7 +37,11 @@ Page({
       url: '../logs/logs'
     })
   },
+
+
   onLoad: function () {
+    this.load()
+
     if (app.globalData.userInfo) {
       this.setData({
         userInfo: app.globalData.userInfo,
